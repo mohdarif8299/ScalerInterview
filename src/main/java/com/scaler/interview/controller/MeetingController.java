@@ -8,10 +8,12 @@ import com.scaler.interview.repository.MeetingRepository;
 import com.scaler.interview.repository.UserMeetingRepository;
 import com.scaler.interview.repository.UserRepository;
 import com.scaler.interview.service.MailService;
+import com.scaler.interview.service.ResumeUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,17 +34,27 @@ public class MeetingController {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private ResumeUploadService resumeUploadService;
+
     @GetMapping("/findAll")
     public ResponseEntity<?> getAllMeeting() {
         List<Meeting> meetingList = meetingRepository.findAll();
         return new ResponseEntity<>(meetingList, HttpStatus.OK);
     }
 
-    @PostMapping("/save")
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadFile(@RequestPart(value = "file") MultipartFile file) {
+        String url = this.resumeUploadService.uploadFileToS3Bucket(file, true);
+        return new ResponseEntity<>(new ResponseObject(url), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/save")
     public ResponseEntity<?> saveMeeting(@RequestBody Meeting meeting) {
-        User user1 = userRepository.findByEmailId(meeting.getParticipantOne()).get();
-        User user2 = userRepository.findByEmailId(meeting.getParticipantTwo()).get();
-        if (meeting != null) {
+               if (meeting != null) {
+            // Saving Meeting
+
             Meeting m = meetingRepository.save(meeting);
 
             // Participant 1 Insertion
@@ -62,7 +74,7 @@ public class MeetingController {
             sendMail(meeting, false);
 
             return new ResponseEntity<>(new ResponseObject("Interview Scheduled Successfully"), HttpStatus.OK);
-        }
+           }
         return new ResponseEntity<>(new ResponseObject("Something went wrong!"), HttpStatus.OK);
     }
 

@@ -32,16 +32,19 @@ public class Meeting {
     @Column(name = "participantTwo")
     public String participantTwo;
 
+    @Column(name = "resume")
+    public String resume;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Meeting)) return false;
         Meeting meeting = (Meeting) o;
-        return Objects.equals(getMeetingId(), meeting.getMeetingId()) && Objects.equals(getAgenda(), meeting.getAgenda()) && Objects.equals(getStartTime(), meeting.getStartTime()) && Objects.equals(getEndTime(), meeting.getEndTime()) && Objects.equals(getParticipantOne(), meeting.getParticipantOne()) && Objects.equals(getParticipantTwo(), meeting.getParticipantTwo());
+        return Objects.equals(getMeetingId(), meeting.getMeetingId()) && Objects.equals(getAgenda(), meeting.getAgenda()) && Objects.equals(getStartTime(), meeting.getStartTime()) && Objects.equals(getEndTime(), meeting.getEndTime()) && Objects.equals(getParticipantOne(), meeting.getParticipantOne()) && Objects.equals(getParticipantTwo(), meeting.getParticipantTwo()) && Objects.equals(getResume(), meeting.getResume());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getMeetingId(), getAgenda(), getStartTime(), getEndTime(), getParticipantOne(), getParticipantTwo());
+        return Objects.hash(getMeetingId(), getAgenda(), getStartTime(), getEndTime(), getParticipantOne(), getParticipantTwo(), getResume());
     }
 }
